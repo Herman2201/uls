@@ -15,7 +15,6 @@ char *mx_create_flags_str(char **argv, int argc)
             }
             mx_strdel(&flags);
             flags = mx_strjoin(temp, &argv[i][1]);
-            //printf("%s", &argv[i][1]);
             mx_strdel(&temp);
         }
         else

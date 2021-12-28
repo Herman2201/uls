@@ -27,6 +27,7 @@ int static get_max_len(char **files)
 
 void mx_ls_print(t_ls **files, int file_n, char *flags)
 {
+    
     char **files_name = mx_until_create_char_arr(file_n + 1); //массив для хранения имен файлов
 
     for (int i = 0; i < file_n; i++)

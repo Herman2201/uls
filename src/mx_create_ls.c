@@ -2,13 +2,36 @@
 
 void static print_dir(t_ls **files, t_main *main)
 {
-    for (int i = 0; files[i]; i++)
+    int i = 0;
+    for (; files[i]; i++)
+        ;
+    for (int k = 0; k < i; k++)
     {
-        if (files[i]->type == 'd')
+        DIR *directory = opendir(files[k]->print_name);
+        if (directory == NULL && errno != ENOTDIR && errno != EACCES)
         {
-            mx_printstr(files[i]->print_name);
-            mx_printstr(":\n");
-            mx_ls_loop(mx_read_dir(files[i]->name, 0), main->flags, main);
+            struct stat info;
+            if (lstat(files[k]->print_name, &(info)) == -1)
+            {
+                mx_printerr("uls: ");
+                perror(files[k]->print_name);
+                files[k]->print_name = NULL;
+                continue;
+            }
+            else
+            {
+                mx_ls_loop(&files[k]->name, main->flags, main);
+            }
+        }
+        if (files[k]->type == 'd')
+        {
+            if (i != 1)
+            {
+                mx_printstr(files[k]->print_name);
+                mx_printstr(":\n");
+            }
+            mx_ls_loop(mx_read_dir(files[k]->name, 0), main->flags, main);
+            // mx_printchar('\n');
         }
     }
 }
