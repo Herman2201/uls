@@ -1,4 +1,4 @@
-all: libmx.a
+all: libmx.a clean
 
 libmx.a: obj
 	@ar rcs libmx.a obj/*.o

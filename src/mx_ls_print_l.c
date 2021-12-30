@@ -47,21 +47,23 @@ char static *mx_ls_get_rwx_str(unsigned short int file_mode)
     return result;
 }
 
-void mx_ls_print_l(t_ls **files, int file_n, char *opt)
+void mx_ls_print_l(int i_total, t_ls **files, int file_n, char *opt)
 {
     int max_nlink_len = mx_untill_get_max_nlink(files);
     int max_size_len = mx_untill_get_max_size(files);
     char *time_str = NULL;
     char *temp = NULL;
     long long int total = 0;
-
-    mx_printstr("total ");
-    for (int i = 0; i < file_n; i++)
+    if (!i_total)
     {
-        total += files[i]->blocks;
+        mx_printstr("total ");
+        for (int i = 0; i < file_n; i++)
+        {
+            total += files[i]->blocks;
+        }
+        mx_printstr(mx_itoa(total));
+        mx_printchar('\n');
     }
-    mx_printstr(mx_itoa(total));
-    mx_printchar('\n');
 
     for (int i = 0; i < file_n; i++)
     {

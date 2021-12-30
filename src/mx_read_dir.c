@@ -1,22 +1,5 @@
 #include "uls.h"
 
-// static void foldsNULL(t_list *foldy)
-// {
-//     DIR *fold;
-//     while (foldy)
-//     {
-//         fold = opendir(foldy->data);
-//         if (fold == NULL && errno != ENOTDIR && errno != EACCES)
-//         {
-//             mx_printerr("uls: ");
-//             perror(foldy->data);
-//             foldy->data = NULL;
-//         }
-//         foldy = foldy->next;
-//     }
-// }
-
-
 static bool get_result(char *d_name, int headen, int *i)
 {
     if (headen == LS_HIDDEN_NOT && d_name[0] == '.')

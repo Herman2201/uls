@@ -1,51 +1,67 @@
 #include "uls.h"
 
-void static print_dir(t_ls **files, t_main *main)
+void print_err_open_dir(char **error_dir, int count_file_err)
+{
+    for (int i = 0; i < count_file_err; i++)
+    {
+        mx_printerr("uls: ");
+        perror(error_dir[i]);
+        error_dir[i] = NULL;
+    }
+}
+
+void static print_dir(int i_total, t_ls **files, t_main *main)
 {
     int i = 0;
+    int k = 0;
     for (; files[i]; i++)
+        ;
+    for (; main->dir[k]; k++)
         ;
     for (int k = 0; k < i; k++)
     {
-        DIR *directory = opendir(files[k]->print_name);
-        if (directory == NULL && errno != ENOTDIR && errno != EACCES)
-        {
-            struct stat info;
-            if (lstat(files[k]->print_name, &(info)) == -1)
-            {
-                mx_printerr("uls: ");
-                perror(files[k]->print_name);
-                files[k]->print_name = NULL;
-                continue;
-            }
-            else
-            {
-                mx_ls_loop(&files[k]->name, main->flags, main);
-            }
-        }
+
         if (files[k]->type == 'd')
         {
-            if (i != 1)
+            if (i != 1 || k >= 0)
             {
                 mx_printstr(files[k]->print_name);
                 mx_printstr(":\n");
             }
-            mx_ls_loop(mx_read_dir(files[k]->name, 0), main->flags, main);
-            // mx_printchar('\n');
+            mx_ls_loop(i_total, mx_read_dir(files[k]->name, 0), main->flags, main);
         }
+        if (k < i - 1)
+            mx_printchar('\n');
     }
 }
 
-void static print_files_without_dir(int str_size, t_main *main, t_ls **files)
+void static print_files_without_dir(int str_size, int str_size_file, t_main *main, t_ls **files, t_ls **out_files)
 {
+    char **files_out = mx_until_create_char_arr(str_size_file);
     char **files_without_dir = mx_until_create_char_arr(str_size);
-    int k = 0;
 
-    if (!str_size)
+    int k = 0;
+    int k1 = 0;
+
+    if (!str_size && !str_size_file)
     {
-        mx_ls_loop(mx_read_dir(".", 0), main->flags, main);
+        mx_ls_loop(k1, mx_read_dir(".", 0), main->flags, main);
     }
 
+    // вывод файлов которые ввел даун
+    for (int i = 0; i < str_size_file; i++)
+    {
+        out_files[i] = mx_get_lstat(main->dir[i]);
+    }
+    out_files[str_size_file] = NULL;
+
+    for (int i = 0; out_files[i]; i++)
+    {
+        files_out[k1] = mx_strdup(out_files[i]->name);
+        k1++;
+    }
+
+    // вывод папок которые ввел даун
     for (int i = 0; i < str_size; i++)
     {
         files[i] = mx_get_lstat(main->files[i]);
@@ -63,14 +79,21 @@ void static print_files_without_dir(int str_size, t_main *main, t_ls **files)
             mx_strdel(&files_without_dir[k]);
         }
     }
-    mx_ls_loop(files_without_dir, main->flags, main);
-    print_dir(files, main);
+
+    mx_ls_loop(k1, files_out, main->flags, main);
+    k1 = 0;
+    mx_ls_loop(k1, files_without_dir, main->flags, main);
+    print_dir(k1, files, main);
 }
 
 void mx_create_ls(t_main *main)
 {
     int str_size = mx_until_get_size_arr(main->files);
-    t_ls **files = mx_ls_create_struct_arr(str_size);
+    int str_size_file = mx_until_get_size_arr(main->dir);
 
-    print_files_without_dir(str_size, main, files);
+    t_ls **files = mx_ls_create_struct_arr(str_size);
+    t_ls **out_files = mx_ls_create_struct_arr(str_size_file);
+
+    print_err_open_dir(main->error_dir, main->count_file_err);
+    print_files_without_dir(str_size, str_size_file, main, files, out_files);
 }

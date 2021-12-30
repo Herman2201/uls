@@ -19,11 +19,11 @@ void static mx_ls_sort_default(char **arr)
     }
 }
 
-char **mx_create_param_arr(char **argv, int argc)
+char **mx_create_param_err_dir(char **argv, int argc)
 {
-    char **files = mx_until_create_char_arr(argc);
+    char **error_dir = mx_until_create_char_arr(argc);
     int k = 0;
-    int j = 0;
+    int e = 0;
 
     for (k = 1; k < argc; k++)
     {
@@ -36,16 +36,18 @@ char **mx_create_param_arr(char **argv, int argc)
     for (int i = k; i < argc; i++)
     {
         DIR *directory = opendir(argv[i]);
-        if (directory == NULL)
+        if (directory == NULL && errno != ENOTDIR && errno != EACCES)
         {
-            continue;
+            struct stat info;
+            if (lstat(argv[i], &(info)) == -1)
+            {
+                error_dir[e] = mx_strdup(argv[i]);
+                e++;
+            }
         }
-
-        files[j] = mx_strdup(argv[i]);
-        j++;
     }
 
-    mx_ls_sort_default(files);
+    mx_ls_sort_default(error_dir);
 
-    return files;
+    return error_dir;
 }

@@ -19,10 +19,10 @@ void static mx_ls_sort_default(t_ls **arr)
     }
 }
 
-void mx_ls_loop(char **files_name, char *flags, t_main *main)
+void mx_ls_loop(int i_total, char **files_name, char *flags, t_main *main)
 {
-
     int file_n = mx_until_get_size_arr(files_name);
+
     if (file_n != 0)
     {
         t_ls **files = mx_ls_create_struct_arr(file_n);
@@ -32,7 +32,7 @@ void mx_ls_loop(char **files_name, char *flags, t_main *main)
             files[i] = mx_get_lstat(files_name[i]);
         }
         mx_ls_sort_default(files);
-        mx_ls_print(files, file_n, flags);
+        mx_ls_print(i_total, files, file_n, flags);
     }
     main = NULL;
 }

@@ -1,6 +1,6 @@
-all: uls
+all: uls clean
 
-uls: libmx.a obj
+uls: libmx.a obj 
 	@clang -std=c11 -Wall -Wextra -Werror -Wpedantic obj/*.o libmx/libmx.a -o uls -I inc
 
 libmx.a: libmx/src/*.c libmx/inc/*.h

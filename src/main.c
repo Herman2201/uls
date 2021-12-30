@@ -21,8 +21,11 @@ t_main *mx_create_main(int argc, char *argv[])
 {
     t_main *main = malloc(sizeof(t_main));
 
+    main->dir = mx_create_param_dir(argv, argc);
+    main->error_dir = mx_create_param_err_dir(argv, argc);
     main->files = mx_create_param_arr(argv, argc);
     main->flags = mx_create_flags_str(argv, argc);
+    main->count_file_err = mx_count_err_dir(argv, argc);
     return main;
 }
 
