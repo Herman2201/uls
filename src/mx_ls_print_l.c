@@ -1,5 +1,21 @@
 #include "uls.h"
 
+int arrayMaxLength(char ***str_arr, int index, int size)
+{
+    int maxLen = 0;
+    int length = 0;
+    int count = 0;
+    while (count < size)
+    {
+        length = mx_strlen(str_arr[count][index]);
+        if (length > maxLen)
+            maxLen = length;
+        count++;
+    }
+
+    return maxLen;
+}
+
 char static *mx_ls_get_rwx_str(unsigned short int file_mode)
 {
     char *result = mx_strdup("---------");
@@ -49,9 +65,16 @@ char static *mx_ls_get_rwx_str(unsigned short int file_mode)
 
 void mx_ls_print_l(int i_total, t_ls **files, int file_n, char *opt)
 {
+    time_t rawtime;
+    struct tm *timeinfo;
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+    int time_now = timeinfo->tm_year + 1900;
+
     int max_nlink_len = mx_untill_get_max_nlink(files);
     int max_size_len = mx_untill_get_max_size(files);
     char *time_str = NULL;
+    char *time_str_year = NULL;
     char *temp = NULL;
     long long int total = 0;
     if (!i_total)
@@ -67,8 +90,12 @@ void mx_ls_print_l(int i_total, t_ls **files, int file_n, char *opt)
 
     for (int i = 0; i < file_n; i++)
     {
+
         temp = ctime(&files[i]->mtime);
-        time_str = mx_strndup(&temp[4], 12);
+        time_str_year = mx_strndup(&temp[20], 4);
+        int file_year = mx_atoi(time_str_year);
+        int is_more_year = file_year - time_now;
+
         mx_printchar(files[i]->type);
         mx_printstr(mx_ls_get_rwx_str(files[i]->mode));
         mx_printstr(" ");
@@ -81,10 +108,22 @@ void mx_ls_print_l(int i_total, t_ls **files, int file_n, char *opt)
         mx_printstr("  ");
         mx_until_print_format_str(mx_itoa((int)files[i]->size), 'r', ' ', max_size_len);
         mx_printstr(" ");
-        mx_printstr(time_str);
+        if (!is_more_year)
+        {
+            time_str = mx_strndup(&temp[4], 12);
+            mx_printstr(time_str);
+        }
+        else
+        {
+            time_str = mx_strndup(&temp[4], 7);
+            time_str = mx_strjoin(time_str, mx_strjoin(" ", time_str_year));
+            mx_printstr(time_str);
+        }
         mx_printstr(" ");
         mx_printstr(files[i]->print_name);
         mx_printstr("\n");
+        free(files[i]);
     }
+
     opt = NULL;
 }

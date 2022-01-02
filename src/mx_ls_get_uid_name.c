@@ -1,6 +1,7 @@
 #include "uls.h"
 
-char *mx_ls_get_uid_name(int st_uid) {
+char *mx_ls_get_uid_name(int st_uid)
+{
     struct passwd *pwd;
 
     pwd = getpwuid(st_uid);

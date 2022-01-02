@@ -1,6 +1,4 @@
 #ifndef ULS
-#define ULS
-// #define _DEFAULT_SOURCE
 
 #include <time.h>
 #include <stdio.h>
@@ -25,20 +23,20 @@
 #define LS_HIDDEN_A 2
 
 typedef struct s_ls {
-    char *name;              //full file name, example ./src/main.c
-    char *print_name;        //short file name, example main.c
-    char *acl_inf;           //needed for flag l (additional information)
-    char type;               //file type
-    unsigned short int mode; //needed for flag l, from it we get permissions and file type
-    long long int size;      //size in bytes
-    unsigned int nlink;      //number of file links needed for flag l
-    char *uid_name;          //user name
-    char *gid_name;          //group name
-    int blksize;             //number of occupied blocks (in bytes)
-    long long int blocks;    //number of occupied blocks (in blocks)
-    long int atime;          //last access time
-    long int mtime;          //last change time
-    long int ctime;          //last change of access rights
+    char *name;           
+    char *print_name;        
+    char *acl_inf;           
+    char type;               
+    unsigned short int mode; 
+    long long int size;      
+    unsigned int nlink;      
+    char *uid_name;          
+    char *gid_name;          
+    int blksize;             
+    long long int blocks;    
+    long int atime;          
+    long int mtime;          
+    long int ctime;          
 } t_ls;
 
 typedef struct s_main {
@@ -72,27 +70,8 @@ int mx_files_in_dir(char *dir, int headen);
 char **mx_create_param_dir(char **argv, int argc);
 char **mx_create_param_err_dir(char **argv, int argc);
 int mx_count_err_dir(char **argv, int argc);
-
-
-
-
-
-
-bool flagError(int argc, char *argv[], bool *estLflag);
-t_list *getFoldsList(int argc, char **argv);
-void foldsNULL(t_list *foldy);
-bool openFolder(char *foldToOpen, bool b);
-bool vyvodFolds(t_list *foldy, bool b);
-char *formListNaVyvod2(char *path, int *countGovna);
-void vyvodColonok(t_list *list);
-void vyvodColonok2(t_list *list);
-void vyvodFlagL(char *fold, t_list *list);
-char *processPermitions(mode_t perm);
-char *formDateTime(time_t vremya);
-int arrayMaxLength(char ***str_arr, int index, int size);
-void print_spaces(char *str, int maxLen);
 char **mx_create_param_arr(char **argv, int argc);
 char **mx_until_create_char_arr(int number);
 char *mx_create_flags_str(char **argv, int argc);
 
-#endif /* ULS */
+#endif 

@@ -9,14 +9,16 @@ char *mx_itoa(int number)
     int copy = number;
     int count = 0;
     char curr = '\0';
-    if (number < 0) count++;
+    if (number < 0)
+        count++;
     while (copy != 0)
     {
         count++;
         copy /= 10;
     }
     char *res = mx_strnew(count);
-    if (number < 0) res[0] = '-';
+    if (number < 0)
+        res[0] = '-';
     while (number != 0)
     {
         curr = number % 10;

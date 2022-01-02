@@ -23,7 +23,7 @@ void static print_dir(int i_total, t_ls **files, t_main *main)
 
         if (files[k]->type == 'd')
         {
-            if (i != 1 || k >= 0)
+            if (i != 1 || k > 0)
             {
                 mx_printstr(files[k]->print_name);
                 mx_printstr(":\n");
@@ -42,6 +42,7 @@ void static print_files_without_dir(int str_size, int str_size_file, t_main *mai
 
     int k = 0;
     int k1 = 0;
+    int k2 = 0;
 
     if (!str_size && !str_size_file)
     {
@@ -78,9 +79,12 @@ void static print_files_without_dir(int str_size, int str_size_file, t_main *mai
         {
             mx_strdel(&files_without_dir[k]);
         }
+        k2++;
     }
 
     mx_ls_loop(k1, files_out, main->flags, main);
+    if (k1 && k2)
+        mx_printchar('\n');
     k1 = 0;
     mx_ls_loop(k1, files_without_dir, main->flags, main);
     print_dir(k1, files, main);
